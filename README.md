@@ -1,2 +1,6 @@
 # servlet-jsp
-Just do. I want to. I can. I have to.
+
+```java
+//Just do. I want to. I can. I have to.
+System.out.println("Hello world");
+```
