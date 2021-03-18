@@ -59,6 +59,8 @@ public class Calc2 extends HttpServlet {
 //			session.setAttribute("op", op);
 			Cookie valueCookie = new Cookie("value", String.valueOf(v));
 			Cookie opCookie = new Cookie("op", op);
+			valueCookie.setPath("/calc2");
+			opCookie.setPath("/calc2");
 			res.addCookie(valueCookie);
 			res.addCookie(opCookie);
 		}
