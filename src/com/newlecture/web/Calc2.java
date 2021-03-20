@@ -32,7 +32,7 @@ public class Calc2 extends HttpServlet {
 //			int y = v;
 //			String operator = (String) session.getAttribute("op");
 			int x = 0;
-			int y = 0;
+			int y = v;
 			String operator = "";
 			for (Cookie cookie : cookies) {
 				if ("value".equals(cookie.getName())) {
@@ -64,6 +64,7 @@ public class Calc2 extends HttpServlet {
 			opCookie.setPath("/calc2");
 			res.addCookie(valueCookie);
 			res.addCookie(opCookie);
+			res.sendRedirect("/calc2.html");
 		}
 	}
 }
