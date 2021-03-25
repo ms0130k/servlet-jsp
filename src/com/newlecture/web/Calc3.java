@@ -2,69 +2,51 @@ package com.newlecture.web;
 
 import java.io.IOException;
 
-import javax.servlet.ServletContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 @WebServlet("/calc3")
 public class Calc3 extends HttpServlet {
 
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		ServletContext application = req.getServletContext();
-		HttpSession session = req.getSession();
 		Cookie[] cookies = req.getCookies();
 		
-		String v_ = req.getParameter("v");
-		String op = req.getParameter("operator");
-		int result = 0;
+		String value = req.getParameter("value");
+		String operator = req.getParameter("operator");
+		String dot = req.getParameter("dot");
 		
-		int v = 0;
-		if (!v_.equals("")) v = Integer.parseInt(v_);
-		
-		if ("=".equals(op)) {
-//			int x = (Integer) session.getAttribute("value");
-//			int y = v;
-//			String operator = (String) session.getAttribute("op");
-			int x = 0;
-			int y = v;
-			String operator = "";
-			for (Cookie cookie : cookies) {
-				if ("value".equals(cookie.getName())) {
-					x = Integer.parseInt(cookie.getValue());
+		String exp = "";
+		if (cookies != null)
+			for (Cookie c : cookies)
+				if (c.getName().equals("exp")) {
+					exp = c.getValue();
+					break;
 				}
-				if ("op".equals(cookie.getName())) {
-					operator = cookie.getValue();
-				}
+		if ("=".equals(operator)) {
+			ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+			try {
+				exp = String.valueOf(engine.eval(exp));
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			
-			switch (operator) {
-			case "+":
-				result = x + y;
-				break;
-			case "-":
-				result = x - y;
-				break;
-			default:
-				break;
-			}
-			res.getWriter().println(result);
 		} else {
-//			session.setAttribute("value", v);
-//			session.setAttribute("op", op);
-			Cookie valueCookie = new Cookie("value", String.valueOf(v));
-			Cookie opCookie = new Cookie("op", op);
-			valueCookie.setPath("/calc2");
-			valueCookie.setMaxAge(24 * 60 * 60);
-			opCookie.setPath("/calc2");
-			res.addCookie(valueCookie);
-			res.addCookie(opCookie);
-			res.sendRedirect("/calc2.html");
+			exp += (value == null) ? "" : value;
+			exp += (operator == null) ? "" : operator;
+			exp += (dot == null) ? "" : dot;
 		}
+		Cookie expCookie = new Cookie("exp", exp);
+		if ("C".equals(operator)) {
+			expCookie.setMaxAge(0);
+		}
+		res.addCookie(expCookie);
+		res.sendRedirect("/calcpageT");
 	}
 }
