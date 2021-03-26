@@ -30,6 +30,7 @@ public class Calc3 extends HttpServlet {
 					exp = c.getValue();
 					break;
 				}
+		
 		if ("=".equals(operator)) {
 			ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 			try {
