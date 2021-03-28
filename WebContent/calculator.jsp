@@ -19,6 +19,7 @@ input {
 </style>
 </head>
 <body>
+<% int x = 3; int y = 0; %>
 	<form action="/calcpage" method="post">
 	
 		<table>
